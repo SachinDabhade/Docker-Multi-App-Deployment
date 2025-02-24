@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./app  # Path to the Flask app's Dockerfile
+    container_name: flask_app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - FLASK_ENV=development
+
+  db:
+    image: mysql:5.7
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: user_db
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql  # Initialize DB with SQL script
+    ports:
+      - "3306:3306"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
